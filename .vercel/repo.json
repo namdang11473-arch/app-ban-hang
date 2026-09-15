@@ -1,0 +1,11 @@
+{
+  "remoteName": "origin",
+  "projects": [
+    {
+      "id": "prj_N4c2bs4bFOcVqzb1ZfbAiAwxHA27",
+      "name": "omnichannel-platform",
+      "directory": ".",
+      "orgId": "team_WT9sekNaKk8ESuRDtTdsBdcZ"
+    }
+  ]
+}

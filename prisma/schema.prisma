@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  role          String    @default("VENDOR")
+  fullName      String
+  phone         String?
+  bankName      String?
+  bankAccount   String?
+  bankOwner     String?
+  isVip         Boolean   @default(false)
+  vipUntil      DateTime?
+  createdAt     DateTime  @default(now())
+  
+  products  Product[] @relation("VendorProducts")
+  orders    Order[]   @relation("AffiliateOrders")
+}
+
+model Product {
+  id                   String   @id @default(uuid())
+  name                 String
+  description          String?
+  price                Float
+  inventory            Int      @default(0)
+  landingPageSlug      String   @unique
+  externalAffiliateUrl String? 
+  imageUrl             String?  
+  videoUrl             String?  
+  allowedShippers      String   @default("VNPOST,GHTK,GHN")
+  variants             String?  
+  affiliateRewardPercent Float  @default(10)
+  weightGram           Int      @default(500)
+  isActive             Boolean  @default(true)
+  createdAt            DateTime @default(now())
+
+  vendorId  String
+  vendor    User     @relation("VendorProducts", fields: [vendorId], references: [id])
+  orders    Order[]
+}
+
+model Order {
+  id                String   @id @default(uuid())
+  customerName      String
+  customerPhone     String
+  customerAddress   String
+  variant           String?  
+  quantity          Int      @default(1)
+  totalAmount       Int      @default(0)
+  commissionAmount  Int      @default(0)
+  status            String   @default("PENDING")
+  paymentMethod     String   @default("COD")
+  paymentStatus     String   @default("UNPAID")
+  trackingCode      String?  
+  createdAt         DateTime @default(now())
+
+  productId  String
+  product    Product @relation(fields: [productId], references: [id])
+  
+  affiliateId String?
+  affiliate   User?   @relation("AffiliateOrders", fields: [affiliateId], references: [id])
+}
